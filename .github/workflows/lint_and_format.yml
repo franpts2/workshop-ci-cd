@@ -1,0 +1,56 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  project:
+    name: Initial setups
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix:
+        node_version: ['20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          
+      - name: Initial setup of the project
+        run: npm run setup
+      
+  linting:
+    name: linting the code
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix:
+        node_version: ['20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint the code in the project
+        run: npm run lint
+
+  formatting:
+    name: formatting the code
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix:
+        node_version: ['20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check if the code in the project is properly formatted
+        run: npm run format:check
+        
+      - name: Format the code in the project
+        run: npm run format:write
+      
