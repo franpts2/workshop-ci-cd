@@ -1,0 +1,52 @@
+name: Building and Uploading
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  project:
+    name: Initial setups
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix:
+        node_version: ['20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node_version }}
+          
+      - name: Initial setup of the project
+        run: npm run setup
+        
+  building:
+    name: build
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix:
+        node_version: ['20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the website distribution
+        run: npm run build
+
+  publish:
+    name: publish
+    runs-on: ${{ matrix.os }}
+    strategy: 
+      matrix:
+        node_version: ['20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish to GitHub pages
+        run: npm publish
+        
+
+  
